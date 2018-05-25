@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="BankDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Addresses">
+    <Key>
+      <PropertyRef Name="ClientID" />
+    </Key>
+    <Property Name="ClientID" Type="Int32" Nullable="false" />
+    <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="State" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Clients" Relationship="Self.FK_Addresses_Clients" FromRole="Addresses" ToRole="Clients" />
+  </EntityType>
+  <EntityType Name="Card">
+    <Key>
+      <PropertyRef Name="CardID" />
+    </Key>
+    <Property Name="CardID" Type="String" MaxLength="16" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="ClientID" Type="Int32" Nullable="false" />
+    <Property Name="PinCode" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="Balance" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+    <NavigationProperty Name="Clients" Relationship="Self.FK_Card_Clients" FromRole="Card" ToRole="Clients" />
+    <NavigationProperty Name="Operations" Relationship="Self.FK_Operations_Card" FromRole="Card" ToRole="Operations" />
+    <NavigationProperty Name="Operations1" Relationship="Self.FK_Operations_OUT" FromRole="Card" ToRole="Operations" />
+  </EntityType>
+  <EntityType Name="Clients">
+    <Key>
+      <PropertyRef Name="ClientID" />
+    </Key>
+    <Property Name="ClientID" Type="Int32" Nullable="false" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Birthday" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Addresses" Relationship="Self.FK_Addresses_Clients" FromRole="Clients" ToRole="Addresses" />
+    <NavigationProperty Name="Card" Relationship="Self.FK_Card_Clients" FromRole="Clients" ToRole="Card" />
+  </EntityType>
+  <EntityType Name="Operations">
+    <Key>
+      <PropertyRef Name="OperationID" />
+    </Key>
+    <Property Name="OperationID" Type="Int32" Nullable="false" />
+    <Property Name="InID" Type="String" MaxLength="16" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="OutID" Type="String" MaxLength="16" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="Amount" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+    <Property Name="OperationTime" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Card" Relationship="Self.FK_Operations_Card" FromRole="Operations" ToRole="Card" />
+    <NavigationProperty Name="Card1" Relationship="Self.FK_Operations_OUT" FromRole="Operations" ToRole="Card" />
+  </EntityType>
+  <Association Name="FK_Addresses_Clients">
+    <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+    <End Role="Addresses" Type="Self.Addresses" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Clients">
+        <PropertyRef Name="ClientID" />
+      </Principal>
+      <Dependent Role="Addresses">
+        <PropertyRef Name="ClientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Card_Clients">
+    <End Role="Clients" Type="Self.Clients" Multiplicity="1" />
+    <End Role="Card" Type="Self.Card" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Clients">
+        <PropertyRef Name="ClientID" />
+      </Principal>
+      <Dependent Role="Card">
+        <PropertyRef Name="ClientID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Operations_Card">
+    <End Role="Card" Type="Self.Card" Multiplicity="1" />
+    <End Role="Operations" Type="Self.Operations" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Card">
+        <PropertyRef Name="CardID" />
+      </Principal>
+      <Dependent Role="Operations">
+        <PropertyRef Name="InID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Operations_OUT">
+    <End Role="Card" Type="Self.Card" Multiplicity="1" />
+    <End Role="Operations" Type="Self.Operations" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Card">
+        <PropertyRef Name="CardID" />
+      </Principal>
+      <Dependent Role="Operations">
+        <PropertyRef Name="OutID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="BankDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Addresses" EntityType="Self.Addresses" />
+    <EntitySet Name="Card" EntityType="Self.Card" />
+    <EntitySet Name="Clients" EntityType="Self.Clients" />
+    <EntitySet Name="Operations" EntityType="Self.Operations" />
+    <AssociationSet Name="FK_Addresses_Clients" Association="Self.FK_Addresses_Clients">
+      <End Role="Clients" EntitySet="Clients" />
+      <End Role="Addresses" EntitySet="Addresses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Card_Clients" Association="Self.FK_Card_Clients">
+      <End Role="Clients" EntitySet="Clients" />
+      <End Role="Card" EntitySet="Card" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Operations_Card" Association="Self.FK_Operations_Card">
+      <End Role="Card" EntitySet="Card" />
+      <End Role="Operations" EntitySet="Operations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Operations_OUT" Association="Self.FK_Operations_OUT">
+      <End Role="Card" EntitySet="Card" />
+      <End Role="Operations" EntitySet="Operations" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
