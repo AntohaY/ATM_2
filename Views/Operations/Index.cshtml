@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ATM.Models.Operations>
+
+
+@{
+    ViewBag.Title = "Card Operations";
+}
+
+<h2>Card Operations</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            From card:
+            @Html.DisplayNameFor(model => model.Card.CardID)
+        </th>
+        <th>
+            To card:
+            @Html.DisplayNameFor(model => model.Card1.CardID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Amount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Card.Balance)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.OperationTime)
+        </th>
+
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Card.CardID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Card1.CardID)
+        </td>
+        @if (@ViewBag.CardID == item.OutID)
+         {
+        <td>
+           +  @Html.DisplayFor(modelItem => item.Amount)
+        </td>
+         }
+        @if(ViewBag.CardID == item.InID)
+        {
+        <td>
+           - @Html.DisplayFor(modelItem => item.Amount)
+        </td>
+        }
+
+        <td>
+            @Html.DisplayFor(modelItem => item.Card.Balance)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.OperationTime)
+        </td>
+
+        @*<td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.OperationID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.OperationID }) |
+            @Html.ActionLink("Delete", "Delete", new { id = item.OperationID })
+        </td>*@
+    </tr>
+}
+
+</table>

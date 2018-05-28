@@ -27,16 +27,16 @@ namespace ATM.Controllers
 
                 using(BankDBEntities db = new BankDBEntities())
                 {
-                    card = db.Card.FirstOrDefault(c => c.CardID == model.CardId && c.PinCode == model.PinCode);
+                    card = db.Card.FirstOrDefault(c => c.CardID == model.CardId && c.PinCode == model.PinCode); //Ищем карточку с таким ID и PinCode.
                 }
                 if (card != null)
                 {
                     FormsAuthentication.SetAuthCookie(model.CardId, false);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Operations",model);
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Пользователя с таким логином и паролем нет");
+                    ModelState.AddModelError("", "Login information was incorrect or non existent");
                 }
             }
                 return View(model);

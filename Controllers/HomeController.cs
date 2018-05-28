@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ATM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,15 +9,17 @@ namespace ATM.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        //private BankDBEntities db = new BankDBEntities();
+        public ActionResult Index(ATM.Models.Card card)
         {
             string result = "Вы не авторизованы";
             if (User.Identity.IsAuthenticated)
             {
-                result = "Ваш логин: " + User.Identity.Name;
+                result = "CardID: " + User.Identity.Name;
             }
+            
             ViewBag.Result = result;
-            return View();
+            return View(card);
         }
        
 
